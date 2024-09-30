@@ -90,7 +90,7 @@ exports.user_login = async (req, res) => {
       });
     } else {
       if (user.verifyPassword(req.body.password)) {
-        if (user.isVerifiedEmail()) {
+        if (!user.isVerifiedEmail()) {
           const token = jwtGenerator(user.userID());
           user
             .update(
@@ -109,6 +109,7 @@ exports.user_login = async (req, res) => {
                 lastName: user.lastname,
                 token: user.token,
                 phone: user.phone,
+                isVerified: user.is_verified_email,
               };
               res.status(200).send({
                 status: true,
@@ -163,14 +164,6 @@ exports.email_verification = async (req, res) => {
         message: "This email address doesn't exist.",
       });
     }
-
-    // Check the user object and its prototype methods
-    console.log("User object: ", user);
-    console.log("Available methods: ", Object.getOwnPropertyNames(Object.getPrototypeOf(user)));
-
-    // Add log to verify that the OTP check is actually invoked
-    console.log("OTP received: ", otp);
-    console.log("User's OTP: ", user.otp);
 
     if (user.verifyOTP(otp)) {
       // Generate token and proceed if OTP is verified
