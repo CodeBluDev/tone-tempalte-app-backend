@@ -107,7 +107,7 @@ module.exports = (sequelize, Sequelize) => {
     }
   };User.prototype.verifyOTP = function (enteredOTP) {
   // Ensure both OTP values are strings for comparison
-  console.log("Comparing OTPs: ", enterOTP, this.otp);
+    console.log("Comparing OTPs: ", enterOTP, this.otp);
 
   return String(enteredOTP) === String(this.otp);
 };

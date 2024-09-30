@@ -6,21 +6,37 @@ const User = db.users;
 const Op = db.Sequelize.Op;
 const where = db.Sequelize.where;
 
+// async function findUserByEmail(email) {
+//   try {
+//     users = await User.findAll({ where: { email: email } });
+//     return users instanceof Array ? users[0] : null;
+//   } catch (ex) {
+//     throw ex;
+//   }
+// }
 async function findUserByEmail(email) {
   try {
-    // Use findOne instead of findAll to get a single instance
-    const user = await User.findOne({
-      where: { email: email },
-      // Ensure that Sequelize returns a model instance (not raw data)
-      raw: false,
-    });
-    return user;
-  } catch (error) {
-    throw error;
+    // Use findOne instead of findAll to retrieve a single user instance
+    const user = await User.findOne({ where: { email: email } });
+    return user;  // This will return the user instance or null
+  } catch (ex) {
+    throw ex;  // Catch any errors during the query
   }
 }
+async function findUserByEmail(email) {
+  try {
+    const user = await User.findOne({ where: { email } });
 
+    // If user is found, force conversion to an instance of User
+    if (user) {
+      return User.build(user.dataValues, { isNewRecord: false });
+    }
 
+    return null;  // Return null if no user is found
+  } catch (ex) {
+    throw ex;
+  }
+}
 
 
 //signup
@@ -153,142 +169,67 @@ exports.user_login = async (req, res) => {
   }
 };
 
-// Email verification
+//EMail verifitcaiotn
 exports.email_verification = async (req, res) => {
   try {
     const { email, otp } = req.body;
-    console.log("Email received: ", email); // Log the email
-    console.log("OTP received: ", otp); // Log the OTP
+    const user = await findUserByEmail(email);
 
-    const user = await findUserByEmail(req.body.email);
-    // console.log("User found: ", user); // Log the user object
-    console.log(user instanceof User);  // This should return true if the user is an instance of the User model
-
-    if (user == null || !(user instanceof User)) {
-      res.status(201).send({
+    if (!user) {
+      return res.status(404).send({
         status: false,
-        statusCode: 201,
+        statusCode: 404,
         message: "This email address doesn't exist.",
       });
-    } else {
-      if (user.checkOTP(otp)) {
-        const token = jwtGenerator(user.userID());
-        console.log("Generated Token: ", token);
-
-        user
-          .update(
-            { token: token },
-            {
-              where: { id: user.userID() },
-            },
-          )
-          .then((result) => {
-            console.log("Update Result: ", result); // Log the result
-            const data = {
-              _id: user.id,
-              name: user.name,
-              email: user.email,
-              avatar: user.avatar,
-              firstName: user.firstname,
-              lastName: user.lastname,
-              token: user.token,
-              phone: user.phone,
-            };
-            res.status(200).send({
-              status: true,
-              statusCode: 200,
-              message: "OTP verify successfully.",
-              data: data,
-            });
-          })
-          .catch((error) => {
-            console.error("Error during update: ", error); // Log the error
-            res.status(500).send({
-              status: false,
-              statusCode: 500,
-              message: error.message || "Internal Server Error!",
-            });
-          });
-      } else {
-        res.status(201).send({
-          status: false,
-          statusCode: 201,
-          message: "OTP code is invalid!",
-        });
-      }
     }
-  } catch (err) {
-    console.error("Error in try-catch: ", err); // Log any errors caught by the try-catch block
 
+    // Check the user object and its prototype methods
+    console.log("User object: ", user);
+    console.log("Available methods: ", Object.getOwnPropertyNames(Object.getPrototypeOf(user)));
+
+    // Add log to verify that the OTP check is actually invoked
+    console.log("OTP received: ", otp);
+    console.log("User's OTP: ", user.otp);
+
+    if (user.verifyOTP(otp)) {
+      // Generate token and proceed if OTP is verified
+      const token = jwtGenerator(user.userID());
+      user.token = token;
+      await user.save();
+
+      const data = {
+        _id: user.id,
+        name: user.name,
+        email: user.email,
+        avatar: user.avatar,
+        firstName: user.firstname,
+        lastName: user.lastname,
+        token: user.token,
+        phone: user.phone,
+      };
+
+      res.status(200).send({
+        status: true,
+        statusCode: 200,
+        message: "OTP verified successfully.",
+        data: data,
+      });
+    } else {
+      res.status(400).send({
+        status: false,
+        statusCode: 400,
+        message: "Invalid OTP.",
+      });
+    }
+  } catch (error) {
+    console.error("Error in try-catch: ", error);
     res.status(500).send({
       status: false,
       statusCode: 500,
-      message: err.message || "Internal Server Error!",
+      message: "Internal Server Error",
     });
   }
 };
-
-// exports.email_verification = async (req, res) => {
-//   try {
-//     const { email, otp } = req.body;
-//     console.log("Email received: ", email); // Log the email
-//     console.log("OTP received: ", otp); // Log the OTP
-
-//     const user = await findUserByEmail(email);
-
-//     if (!user) {
-//       return res.status(404).send({
-//         status: false,
-//         statusCode: 404,
-//         message: "This email address doesn't exist.",
-//       });
-//     }
-
-//     console.log("Available methods on the user instance:", Object.getOwnPropertyNames(Object.getPrototypeOf(user)));
-//     console.log("OTP to check:", otp);
-//     console.log("User's OTP:", user.otp);
-
-//     // Use the new verifyOTP method
-//     if (user.verifyOTP(otp)) {
-//       const token = jwtGenerator(user.userID());
-//       user.token = token;
-//       await user.save(); // Save the updated token to the database
-
-//       const data = {
-//         _id: user.id,
-//         name: user.name,
-//         email: user.email,
-//         avatar: user.avatar,
-//         firstName: user.firstname,
-//         lastName: user.lastname,
-//         token: user.token,
-//         phone: user.phone,
-//       };
-
-//       res.status(200).send({
-//         status: true,
-//         statusCode: 200,
-//         message: "OTP verified successfully.",
-//         data: data,
-//       });
-//     } else {
-//       res.status(400).send({
-//         status: false,
-//         statusCode: 400,
-//         message: "Invalid OTP.",
-//       });
-//     }
-//   } catch (error) {
-//     console.error("Error in try-catch: ", error);
-//     res.status(500).send({
-//       status: false,
-//       statusCode: 500,
-//       message: "Internal Server Error",
-//     });
-//   }
-// };
-
-
 
 //forgot otp
 exports.sent_otp_forgot = async (req, res) => {
