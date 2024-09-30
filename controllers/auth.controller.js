@@ -16,27 +16,28 @@ const where = db.Sequelize.where;
 // }
 async function findUserByEmail(email) {
   try {
-    // Use findOne instead of findAll to retrieve a single user instance
-    const user = await User.findOne({ where: { email: email } });
+        const lowercasedEmail = email.toLowerCase(); // Convert email to lowercase
+    const user = await User.findOne({ where: { email: lowercasedEmail } });
+
     return user;  // This will return the user instance or null
   } catch (ex) {
     throw ex;  // Catch any errors during the query
   }
 }
-async function findUserByEmail(email) {
-  try {
-    const user = await User.findOne({ where: { email } });
+// async function findUserByEmail(email) {
+//   try {
+//     const user = await User.findOne({ where: { email } });
 
-    // If user is found, force conversion to an instance of User
-    if (user) {
-      return User.build(user.dataValues, { isNewRecord: false });
-    }
+//     // If user is found, force conversion to an instance of User
+//     if (user) {
+//       return User.build(user.dataValues, { isNewRecord: false });
+//     }
 
-    return null;  // Return null if no user is found
-  } catch (ex) {
-    throw ex;
-  }
-}
+//     return null;  // Return null if no user is found
+//   } catch (ex) {
+//     throw ex;
+//   }
+// }
 
 
 //signup
