@@ -6,13 +6,7 @@ const User = db.users;
 const Op = db.Sequelize.Op;
 const where = db.Sequelize.where;
 
-// async function findUserByEmail(email) {
-//   try {
-//     users = await User.findAll({ where: { email: email } });
-//     return users instanceof Array ? users[0] : null;
-//   } catch (ex) {
-//     throw ex;
-//   }
+
 // }
 async function findUserByEmail(email) {
   try {
@@ -24,20 +18,6 @@ async function findUserByEmail(email) {
     throw ex;  // Catch any errors during the query
   }
 }
-// async function findUserByEmail(email) {
-//   try {
-//     const user = await User.findOne({ where: { email } });
-
-//     // If user is found, force conversion to an instance of User
-//     if (user) {
-//       return User.build(user.dataValues, { isNewRecord: false });
-//     }
-
-//     return null;  // Return null if no user is found
-//   } catch (ex) {
-//     throw ex;
-//   }
-// }
 
 
 //signup
@@ -170,7 +150,7 @@ exports.user_login = async (req, res) => {
   }
 };
 
-//EMail verifitcaiotn
+//Email Verification
 exports.email_verification = async (req, res) => {
   try {
     const { email, otp } = req.body;
@@ -196,6 +176,7 @@ exports.email_verification = async (req, res) => {
       // Generate token and proceed if OTP is verified
       const token = jwtGenerator(user.userID());
       user.token = token;
+      user.is_verified_email = true;
       await user.save();
 
       const data = {
