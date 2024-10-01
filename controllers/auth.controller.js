@@ -40,7 +40,6 @@ exports.admin_login = async (req, res) => {
 };
 
 //signup
-//signup
 exports.user_register = async (req, res) => {
   try {
     let { firstName, lastName, email, password } = req.body;
@@ -95,7 +94,6 @@ exports.user_register = async (req, res) => {
     });
   }
 };
-
 
 
 //login
