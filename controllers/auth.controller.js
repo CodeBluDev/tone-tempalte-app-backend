@@ -2,7 +2,7 @@ const db = require("../models");
 require("dotenv").config();
 const jwtGenerator = require("../utils/jwtGenerator");
 const sendMail = require("../utils/sendMail");
-const User = db.users;
+const User = db.user;
 const Op = db.Sequelize.Op;
 const where = db.Sequelize.where;
 
@@ -19,7 +19,27 @@ async function findUserByEmail(email) {
   }
 }
 
+// admin login
+// auth.controller.js
+exports.admin_login = async (req, res) => {
+  const { email, password } = req.body;
 
+  // Hard-coded credentials
+  const hardCodedAdmin = {
+      email: "admin@example.com",
+      password: "securePassword123"
+  };
+
+  // Check if the provided email and password match the hard-coded ones
+  if (email === hardCodedAdmin.email && password === hardCodedAdmin.password) {
+      // Simulate successful login
+      return res.status(200).send({ status: true, message: "Login successful!" });
+  } else {
+      return res.status(401).send({ status: false, message: "Invalid email or password." });
+  }
+};
+
+//signup
 //signup
 exports.user_register = async (req, res) => {
   try {
@@ -75,6 +95,8 @@ exports.user_register = async (req, res) => {
     });
   }
 };
+
+
 
 //login
 exports.user_login = async (req, res) => {

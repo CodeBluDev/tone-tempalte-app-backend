@@ -2,9 +2,8 @@ const db = require('./models'); // Ensure this points to your models index file 
 
 async function resetDatabase() {
   try {
-    // Ensure db.sequelize is defined and has the sync method
-    if (db.sequelize && typeof db.sequelize.sync === 'function') {
-      await db.sequelize.sync({ force: true }); // Drop and recreate all tables
+    if (db.connection && typeof db.connection.sync === 'function') {
+      await db.connection.sync({ force: true }); // Force drop and recreate all tables
       console.log('Database reset and synchronized');
     } else {
       throw new Error("Sequelize instance is not available or not properly configured.");

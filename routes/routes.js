@@ -33,5 +33,7 @@ module.exports = (app) => {
   router.post("/uploadVendor", vendors.upload_vendors);
   router.get("/getVendors", vendors.get_vendors);
 
+  router.post("/adminLogin", authentication.user_login);
+
   app.use("/api", router);
 };

@@ -4,57 +4,45 @@ module.exports = (sequelize, Sequelize) => {
   const User = sequelize.define("user", {
     firstname: {
       type: Sequelize.STRING,
-      notEmpty: true,
-      notNull: true,
-      unique: false,
+      allowNull: false,
     },
     lastname: {
       type: Sequelize.STRING,
-      notEmpty: true,
-      notNull: true,
-      unique: false,
+      allowNull: false,
     },
     name: {
       type: Sequelize.STRING,
-      notEmpty: true,
-      notNull: true,
-      unique: false,
+      allowNull: false,
     },
     email: {
       type: Sequelize.STRING,
-      set: function (val) {
+      allowNull: false,
+      unique: true,
+      set(val) {
         this.setDataValue("email", val.toLowerCase());
       },
-      isEmail: true,
-      notEmpty: true,
-      notNull: true,
-      unique: true,
     },
     password: {
       type: Sequelize.STRING,
-      notEmpty: true,
-      notNull: true,
+      allowNull: false,
       get() {
         return () => this.getDataValue("password");
       },
     },
     salt: {
       type: Sequelize.STRING,
-      notEmpty: true,
-      notNull: true,
+      allowNull: true,
       get() {
         return () => this.getDataValue("salt");
       },
     },
     otp: {
       type: Sequelize.STRING,
-      notEmpty: false,
-      notNull: false,
+      allowNull: true,
     },
     avatar: {
       type: Sequelize.STRING,
-      notEmpty: false,
-      notNull: false,
+      allowNull: true,
     },
     token: {
       type: Sequelize.TEXT,
@@ -62,18 +50,11 @@ module.exports = (sequelize, Sequelize) => {
     },
     otp_forgot: {
       type: Sequelize.STRING,
-      notEmpty: false,
-      notNull: false,
+      allowNull: true,
     },
     phone: {
       type: Sequelize.STRING,
-      notEmpty: false,
-      notNull: false,
-    },
-    id: {
-      type: Sequelize.INTEGER,
-      primaryKey: true,
-      autoIncrement: true,
+      allowNull: true,
     },
     notification_status: {
       type: Sequelize.BOOLEAN,
@@ -83,29 +64,45 @@ module.exports = (sequelize, Sequelize) => {
       type: Sequelize.BOOLEAN,
       defaultValue: false,
     },
-    plus_member: {
+    date_of_birth: {
+      type: Sequelize.DATEONLY,
+      allowNull: true, // Optional for now
+    },
+    rewards_member: {
       type: Sequelize.BOOLEAN,
       defaultValue: false,
     },
+    rewards_id: {
+      type: Sequelize.STRING,
+      allowNull: true,
+    },
+    points: {
+      type: Sequelize.INTEGER,
+      defaultValue: 0,
+    },
   });
 
+  
   User.generateSalt = function () {
-    return crypto.randomBytes(16).toString("base64");
+    return crypto.randomBytes(16).toString("base64");  // Generates a 16-byte salt
   };
+  
   User.encryptPassword = function (plainText, salt) {
-    return crypto
-      .createHash("RSA-SHA256")
+    return crypto.createHash("RSA-SHA256")
       .update(plainText)
       .update(salt)
-      .digest("hex");
+      .digest("hex");  // Encrypts password with the provided salt
   };
-
-  const setSaltAndPassword = (user) => {
-    if (user.changed("password")) {
+  
+  function setSaltAndPassword(user) {
+    console.log('Setting salt and password for user:', user);  // Debug
+    if (user.changed('password')) {
       user.salt = User.generateSalt();
       user.password = User.encryptPassword(user.password(), user.salt());
     }
-  };User.prototype.verifyOTP = function (enteredOTP) {
+  }
+  
+  User.prototype.verifyOTP = function (enteredOTP) {
   // Ensure both OTP values are strings for comparison
     console.log("Comparing OTPs: ", enterOTP, this.otp);
 
