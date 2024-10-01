@@ -2,7 +2,7 @@ const db = require("../models");
 const User = db.users;
 
 const logger = (req, res, next) => {
-  console.log(`Received: ${req.method} ${req.path} Body: ${req.body}`);
+  console.log(`Received: ${req.method} ${req.path} Body: ${JSON.stringify(req.body)}`);
   next();
 };
 
