@@ -52,7 +52,7 @@ exports.user_register = async (req, res) => {
   }
 
   try {
-    let { firstName, lastName, email, password } = req.body;
+    let { firstName, lastName, email, password, date_of_birth } = req.body;
     const user = await findUserByEmail(req.body.email);
     if (user != null || user instanceof User) {
       res.status(201).send({
@@ -70,6 +70,7 @@ exports.user_register = async (req, res) => {
         password: password,
         otp: otp,
         rewards_id: generateRandomId(10),
+        date_of_birth: date_of_birth
       };
 
       User.create(newUser)
