@@ -1,3 +1,4 @@
+const offerController = require("../controllers/offer.controller");
 module.exports = (app) => {
     const authentication = require("../controllers/auth.controller.js");
     const home = require("../controllers/home.controller.js");
@@ -8,11 +9,13 @@ module.exports = (app) => {
     const notification = require("../controllers/notification.controller.js");
     const vendors = require("../controllers/vendors.controller.js");
     const storeController = require("../controllers/store.controller.js");
+    const offerController = require('../controllers/offer.controller');
     const {_, auth} = require("../middlewares/auth");
     const validateInfo = require("../middlewares/validateInfo");
 
     var router = require("express").Router();
     var storeRouter = require("express").Router();
+    const offerRouter = require('express').Router();
 
     router.post("/signup", validateInfo, authentication.user_register);
     router.post("/login", validateInfo, authentication.user_login);
@@ -40,6 +43,14 @@ module.exports = (app) => {
     // for store routes
     storeRouter.get("/", storeController.getStore);
 
+    // for offer routes
+    offerRouter.get('/', offerController.getOffers);
+    offerRouter.post('/', offerController.addOffer);
+    offerRouter.put('/:id', offerController.updateOffer);
+    offerRouter.delete('/:id', offerController.deleteOffer);
+    offerRouter.delete('/', offerController.deleteOffer);
+
     app.use("/api", router);
     app.use("/api/store", storeRouter);
+    app.use('/api/offers', offerRouter);
 };
