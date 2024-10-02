@@ -41,6 +41,16 @@ exports.admin_login = async (req, res) => {
 
 //signup
 exports.user_register = async (req, res) => {
+  function generateRandomId(length = 8) {
+    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    let randomId = '';
+    for (let i = 0; i < length; i++) {
+      const randomIndex = Math.floor(Math.random() * chars.length);
+      randomId += chars[randomIndex];
+    }
+    return randomId;
+  }
+
   try {
     let { firstName, lastName, email, password } = req.body;
     const user = await findUserByEmail(req.body.email);
@@ -59,6 +69,7 @@ exports.user_register = async (req, res) => {
         email: email,
         password: password,
         otp: otp,
+        rewards_id: generateRandomId(10),
       };
 
       User.create(newUser)
