@@ -1,12 +1,11 @@
 const db = require("../models");
 const Store = db.store;
 
-exports.findOne = async (req, res) => {
-    const store = await Store.findOne({
-        where: {
-            id: req.params["id"],
-        }
+exports.getStore = async (req, res) => {
+    const store = await Store.findAll({
+        limit: 1,
+        order: [['id', 'DESC']]
     });
 
-    res.status(200).send(store);
+    res.status(200).send(store[0]);
 }

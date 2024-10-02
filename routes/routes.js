@@ -38,7 +38,7 @@ module.exports = (app) => {
     router.post("/adminLogin", authentication.user_login);
 
     // for store routes
-    storeRouter.get("/:id", storeController.findOne);
+    storeRouter.get("/", storeController.getStore);
 
     app.use("/api", router);
     app.use("/api/store", storeRouter);
