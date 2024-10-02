@@ -2,18 +2,18 @@ const db = require('../models')
 const Offer = db.offer;
 
 exports.getOffers = async (req, res) => {
-    const page = req.query.page;
-    let limit = req.query.limit;
-
-    if (!limit) {
-        limit = 10;
-    } else {
-        limit = parseInt(limit);
-    }
+    // const page = req.query.page;
+    // let limit = req.query.limit;
+    //
+    // if (!limit) {
+    //     limit = 10;
+    // } else {
+    //     limit = parseInt(limit);
+    // }
 
     const offers = await Offer.findAndCountAll({
-        limit: limit,
-        offset: parseInt(page) * limit, // 10 is the limit
+        // limit: limit,
+        // offset: parseInt(page) * limit, // 10 is the limit
     });
 
     res.status(200).send(offers);
