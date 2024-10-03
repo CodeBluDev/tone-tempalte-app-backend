@@ -1,5 +1,5 @@
 const db = require("../models");
-const User = db.users;
+const User = db.user;
 
 const logger = (req, res, next) => {
   console.log(`Received: ${req.method} ${req.path} Body: ${JSON.stringify(req.body)}`);
