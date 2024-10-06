@@ -3,21 +3,21 @@
     "username": "admin",
     "password": "ToneAppAdmin7400",
     "database": "TheToneKnowApp",
-    "host": "172.31.27.5",
+    "host": "127.0.0.1",
     "dialect": "postgres"
   },
   "test": {
     "username": "admin",
     "password": "ToneAppAdmin7400",
     "database": "TheToneKnowApp",
-    "host": "172.31.27.5",
+    "host": "127.0.0.1",
     "dialect": "postgres"
   },
   "production": {
     "username": "admin",
     "password": "ToneAppAdmin7400",
     "database": "TheToneKnowApp",
-    "host": "172.31.27.5",
+    "host": "127.0.0.1",
     "dialect": "postgres"
   }
 }
