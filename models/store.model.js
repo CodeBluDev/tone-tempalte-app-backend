@@ -17,7 +17,7 @@ module.exports = (sequelize, Sequelize) => {
         type: Sequelize.FLOAT,
         allowNull: false,
       },
-      location_lan: {
+      location_lng: {
         type: Sequelize.FLOAT,
         allowNull: false,
       },
