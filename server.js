@@ -15,13 +15,13 @@ app.use(express.urlencoded({ extended: true }));
 app.use(logger);
 
 // Update this to use the sequelize instance instead of connection
-db.sequelize.sync({ force: true }) // This will drop and recreate the tables
-  .then(() => {
-    console.log("Database reset and synchronized");
-  })
-  .catch(err => {
-    console.error("Error syncing the database:", err);
-  });
+// db.sequelize.sync({ force: true }) // This will drop and recreate the tables
+//   .then(() => {
+//     console.log("Database reset and synchronized");
+//   })
+//   .catch(err => {
+//     console.error("Error syncing the database:", err);
+//   });
 
 require("./routes/routes")(app);
 

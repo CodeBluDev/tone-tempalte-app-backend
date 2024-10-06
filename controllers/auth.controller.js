@@ -143,6 +143,7 @@ exports.user_login = async (req, res) => {
                 phone: user.phone,
                 isVerified: user.is_verified_email,
                 rewardsId: user.rewards_id,
+                points: user.points,
               };
               res.status(200).send({
                 status: true,
