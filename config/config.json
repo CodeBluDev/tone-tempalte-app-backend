@@ -15,9 +15,9 @@
   },
   "production": {
     "username": "admin",
-    "password": "toneAppAdmin7400",
-    "database": "TheToneKnowApp_production",
-    "host": "127.0.0.1",
+    "password": "ToneAppAdmin7400",
+    "database": "TheToneKnowApp",
+    "host": "172.31.27.5",
     "dialect": "postgres"
   }
 }
