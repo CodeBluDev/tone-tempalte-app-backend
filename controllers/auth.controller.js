@@ -108,6 +108,28 @@ exports.user_register = async (req, res) => {
 };
 
 
+// account deletion
+exports.user_delete = async (req, res) => {
+  try {
+    const user = res.user
+    if (user == null) {
+      throw Error('Cannot perform account deletion. User not found');
+    }
+
+    // the user model is already retrieved from a middleware.
+    // so, to delete, we just need now to destroy this model.
+    await user.destroy();
+    res.status(200).send('Account deleted');
+  } catch (err) {
+    res.status(500).send({
+      status: false,
+      statusCode: 500,
+      message: err.message || "Internal Server Error!",
+    });
+  }
+};
+
+
 //login
 exports.user_login = async (req, res) => {
   try {
