@@ -19,6 +19,7 @@ module.exports = (app) => {
 
     router.post("/signup", validateInfo, authentication.user_register);
     router.post("/login", validateInfo, authentication.user_login);
+    router.delete("/accountDelete", auth, authentication.user_delete);
     router.post("/verifyOTP", validateInfo, authentication.email_verification);
     router.post("/sentForgotOTP", validateInfo, authentication.sent_otp_forgot);
     router.post("/forgotPassword", validateInfo, authentication.forgot_password);
